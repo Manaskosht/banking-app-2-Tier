@@ -1,4 +1,4 @@
-name: Test Wrokflow
+name: Test Wrokflows
 on:
   push:
     branches: [ main ]
