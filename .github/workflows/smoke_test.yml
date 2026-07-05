@@ -9,4 +9,4 @@ jobs:
 
     steps:
       - name : Echo Message
-        run : echo "Smoke Test" is working successfully ✅"
+        run : echo "Smoke Test is working successfully ✅"
