@@ -23,13 +23,12 @@ jobs:
           CMD_ID=$(aws ssm send-command \
             --targets "Key=tag:App,Values=flask" \
             --document-name "AWS-RunShellScript" \
-            --parameters '{
-              "commands":[
+            --parameters '{"commands":[
                 "hostname -I",
                 "docker --version 2>/dev/null || echo Docker not installed",
                 "aws --version 2>/dev/null || echo AWS CLI not installed",
                 "mysql --version 2>/dev/null || echo MySQL not installed",
-                "aws ssm get-parameters-by-path --path /application/banking --with-decryption --region us-east-1"
+                "aws ssm get-parameters-by-path --path /application/banking --with-decryption --region us-east-1 --query Parameters[*].[Name,Value] --output text"
               ]
             }' \
             --query 'Command.CommandId' \
@@ -48,7 +47,7 @@ jobs:
             --details \
             --region us-east-1 \
             --query 'CommandInvocations[*].{Instance:InstanceId,Status:Status,Output:CommandPlugins[0].Output}' \
-            --output table
+            --output text
 
           FAILED=$(aws ssm list-command-invocations \
             --command-id "${{ steps.health.outputs.cmd_id }}" \
