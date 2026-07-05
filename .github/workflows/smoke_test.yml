@@ -16,10 +16,9 @@ jobs:
           aws-region: us-east-1
       - name: Upload smoke_test.py on AWS
         run: |
-            aws s3 bm se://331146039200-devops-scripts/smoke_test.py \
-            --region us-east-1
+            aws s3 mb s3://331146039200-devops-scripts --region us-east-1
             aws s3 cp ./smoke_test.py \
-            s3://devops-scripts/smoke_test.py \
+            s3://331146039200-devops-scripts/smoke_test.py \
             --region us-east-1
 
       - name: Run smoke test on Fleet
