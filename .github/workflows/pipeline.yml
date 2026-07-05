@@ -22,21 +22,21 @@ jobs:
   smoke_testing:
     needs: test_fleet_health_envs
     uses: ./.github/workflows/smoke_test.yml
-     permissions:
+    permissions:
       contents: read
       id-token: write
 
   build_push:
     needs: smoke_testing
     uses: ./.github/workflows/build_push.yml
-     permissions:
+    permissions:
       contents: read
       id-token: write
 
   deploy:
     needs: build_push
     uses: ./.github/workflows/deploy.yml
-     permissions:
+    permissions:
       contents: read
       id-token: write
 
