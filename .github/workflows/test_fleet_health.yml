@@ -56,6 +56,6 @@ jobs:
             --query "length(CommandInvocations[?Status=='Failed'])" \
             --output text)
 
-          [ "$FAILED" -GT 0 ] && \
+          [ "$FAILED" -gt 0 ] && \
           echo "::error::Health check failed on $FAILED instances" && \
           echo "All instances Healthy✅"
