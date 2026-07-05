@@ -15,7 +15,7 @@ jobs:
   test_fleet_health_envs:
     needs: verify_connection
     uses: ./.github/workflows/test_fleet_health.yml
-     permissions:
+    permissions:
       contents: read
       id-token: write
 
