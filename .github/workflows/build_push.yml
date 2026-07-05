@@ -1,7 +1,7 @@
 name : Building and Pushing for ECR
 
 on:
-  workflow_dispatch
+  workflow_call
 
 jobs:
   working-job:
