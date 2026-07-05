@@ -8,7 +8,7 @@ on:
 jobs:
   verify:
     uses: ./.github/workflows/test_connection.yml
-    permissions:
+    permissions: 
       contents: read
       id-token: write
 
