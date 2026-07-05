@@ -14,11 +14,10 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::331146039200:role/github-action-deploy-policy
           aws-region: us-east-1
-      - name
       - name: Upload smoke_test.py on AWS
         run: |
           aws s3 cp ./smoke_test.py \
-            s3://331146039200-331146039200-devops-scripts/smoke_test.py \
+            s3://331146039200-s3-bucket-notification-109/smoke_test.py \
             --region us-east-1
 
       - name: Run smoke test on Fleet
