@@ -1,44 +1,47 @@
-name: Smoke Testing for Infra and Networking
+name: Smoke Testing For Infra and Networking
 
 on:
   workflow_call:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   smoke:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
+        with:
+          repository: Manaskosht/banking-app-2-Tier
+          ref: main
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::331146039200:role/github-action-deploy-policy
           aws-region: us-east-1
-      - name: Upload smoke_test.py on AWS
-        run: |
-            aws s3 mb s3://331146039200-devops-scripts --region us-east-1
-            aws s3 cp ./smoke_test.py \
-            s3://331146039200-devops-scripts/smoke_test.py \
-            --region us-east-1
 
-      - name: Run smoke test on Fleet
+      - name: Upload smoke_test.py to S3
+        run: |
+          aws s3 mb s3://331146039200-devops-scripts --region us-east-1 2>/dev/null || true
+          aws s3 cp smoke_test.py s3://331146039200-devops-scripts/smoke_test.py --region us-east-1
+
+      - name: Run Smoke Test on Fleet
         id: smoke
         run: |
           CMD_ID=$(aws ssm send-command \
             --targets "Key=tag:App,Values=flask" \
             --document-name "AWS-RunShellScript" \
-            --parameters '{
-              "commands":[
-                "aws s3 cp s3://331146039200-devops-scripts/smoke_test.py /tmp/smoke_test.py",
-                "python3 /tmp/smoke_test.py || exit 1",
-                "rm -f /tmp/smoke_test.py"
-              ]
-            }' \
+            --parameters '{"commands":[
+              "aws s3 cp s3://331146039200-devops-scripts/smoke_test.py /tmp/smoke_test.py",
+              "pip3 install pymysql -q 2>/dev/null",
+              "python3 /tmp/smoke_test.py || exit 1",
+              "rm /tmp/smoke_test.py"
+            ]}' \
             --query 'Command.CommandId' \
             --output text \
             --region us-east-1)
-
-          echo "cmd_id=$CMD_ID" >> "$GITHUB_OUTPUT"
+          echo "cmd_id=$CMD_ID" >> $GITHUB_OUTPUT
 
       - name: Show Results
         run: |
@@ -56,11 +59,8 @@ jobs:
             --output text \
             --region us-east-1)
 
-          echo "FAILED=$FAILED"
-
-          if [ "${FAILED:-0}" -gt 0 ]; then
-            echo "::error::Smoke test failed on Fleet"
+          [ "$FAILED" -gt 0 ] && \
+            echo "::error::Smoke test failed on $FAILED instance(s)!" && \
             exit 1
-          fi
 
-          echo "✅ Smoke test successfully passed."
+          echo "✅ Smoke Test Passed!"

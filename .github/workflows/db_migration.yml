@@ -16,7 +16,7 @@ jobs:
         with:
           repository: Manaskosht/banking-app-2-Tier
           ref: main
-          
+
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::331146039200:role/github-action-deploy-policy
@@ -28,3 +28,4 @@ jobs:
           aws s3 cp init.sql s3://331146039200-devops-scripts/init.sql
           aws s3 cp init.py s3://331146039200-devops-scripts/init.py
           echo "File Uploaded to Bucket..✅"
+      - name 
