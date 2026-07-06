@@ -40,7 +40,7 @@ jobs:
              "python3 /tmp/init.py || exit 1",
              "rm -f /tmp/init.py",
              "rm -f /tmp/init.sql"
-          ]}'
+          ]}' \
             --query 'Command.CommandId' \
             --output text \
             --region us-east-1)
