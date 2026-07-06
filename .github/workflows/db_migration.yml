@@ -28,4 +28,3 @@ jobs:
           aws s3 cp init.sql s3://331146039200-devops-scripts/init.sql
           aws s3 cp init.py s3://331146039200-devops-scripts/init.py
           echo "File Uploaded to Bucket..✅"
-      - name 
