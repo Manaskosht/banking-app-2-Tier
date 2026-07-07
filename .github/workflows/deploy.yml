@@ -1,12 +1,36 @@
-name : Test Fleet health and Env variables
+name : Application Deploying On AWS
 
 on:
-  workflow_call
+  workflow_call:
+
+  
+permissions:
+  id-token: write
+  contents: read  
+
+env:
+  VERSION: v1
+  IMAGE: 331146039200.dkr.ecr.us-east-1.amazonaws.com/flaskapp-simple-bank
+  REGION: us-east-1
+  S3_BUCKET: s3://331146039200-devops-scripts
 
 jobs:
-  working-job:
-    runs-on: ubuntu-latest
-
+  build-and-deploy:
+    runs-on: ubunut-latest
     steps:
-      - name : Echo Message
-        run : echo "Application deploy on AWS successfully ✅"
+      - uses: action/checkout@v4
+        with:
+          repository: Manaskosht/banking-app-2-Tier
+          ref: main
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::331146039200:role/github-action-deploy-policy
+          aws-region: ${{ env.REGION }}
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region ${{ env.REGION }} | \
+          docker login --username AWS --password-stdin \
+          331146039200.dkr.ecr.${{ env.REGION }}.amazonaws.com
+          echo "Login Successfull to ECR ✅"
